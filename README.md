@@ -20,4 +20,5 @@ The Open Myo module **only works on Linux**, as the bluepy module is only availa
  sudo apt update
  sudo apt install pyqt4-dev-tools
  ```
-
+### Screenshots
+![GitHub Logo](https://github.com/hananabilabd/EMG-Classification-Visualization-using-MYO-ArmBand-Raspberry-Pi/blob/master/screenshot1.PNG)
