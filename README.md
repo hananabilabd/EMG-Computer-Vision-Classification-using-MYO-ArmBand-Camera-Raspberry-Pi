@@ -11,7 +11,7 @@ This module requires the [bluepy](https://github.com/IanHarvey/bluepy) Python mo
 
 All code using the bluepy module must run with root permissions. To run the example code, execute:
 
-``$ sudo python main.py``
+``$ sudo python GP.py``
 
 The Open Myo module **only works on Linux**, as the bluepy module is only available for Linux.
 
