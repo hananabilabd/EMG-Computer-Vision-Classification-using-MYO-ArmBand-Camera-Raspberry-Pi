@@ -22,3 +22,5 @@ The Open Myo module **only works on Linux**, as the bluepy module is only availa
  ```
 ### Screenshots
 ![GitHub Logo](https://github.com/hananabilabd/EMG-Classification-Visualization-using-MYO-ArmBand-Raspberry-Pi/blob/master/screenshot1.PNG)
+![](https://github.com/hananabilabd/EMG-Classification-Visualization-using-MYO-ArmBand-Raspberry-Pi/blob/master/screenshot2.PNG)
+![alt text](https://github.com/hananabilabd/EMG-Classification-Visualization-using-MYO-ArmBand-Raspberry-Pi/blob/master/screenshot3.PNG)
