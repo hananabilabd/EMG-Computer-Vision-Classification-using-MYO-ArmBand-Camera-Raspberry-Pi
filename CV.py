@@ -225,7 +225,7 @@ class CV():
                 if self.Choose_grasp:
                     if self.grasp in self.Choose_grasp:
                         self.Choose_grasp.remove( self.grasp )
-                else:
+                if not self.Choose_grasp: #Check if list is empty after removing an element.
                     self.Choose_grasp = list( self.all_grasps )
                     self.corrections = 0
                 self.grasp = random.SystemRandom().choice( self.Choose_grasp )
