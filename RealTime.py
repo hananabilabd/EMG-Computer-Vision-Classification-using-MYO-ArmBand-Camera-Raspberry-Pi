@@ -16,15 +16,14 @@ import time
 #from test import MyoRaw
 import open_myo as myo
 import threading
-import GP
+#import GP
 class RealTime():
 
     def __init__(self):
         #super(RealTime, self).__init__()
         #self.setupUi(self)
-   
 
-        self.b = np.empty( [0, 8] )
+        self.EMG = np.empty( [0, 8] )
         self.predictions_array = []
         self.p=np.empty([0,8])
         self.emg_total = np.empty( [0, 8] )
@@ -33,17 +32,13 @@ class RealTime():
         self.Flag_Graph=None
         self.Flag_Predict =None
         self.prediction = None
+        self.stop_request =True
         
         #self.set_GP_instance(GP)
         
     def set_GP_instance(self,GP):
         self.GP=GP
         
-
-
-    def test(self):
-        self.GP.textBrowser.insertPlainText("yA Rabyyyyyyy otorha \n")
-        self.GP.textBrowser.setText( "God" )
 
 #search on Hampel filter to remove spikes. and make notch filter on 50 hz
     def filteration (self,data,sample_rate=2000.0,cut_off=20.0,order=5,ftype='highpass'):
@@ -111,11 +106,11 @@ class RealTime():
 
 
 
-
+    """
     def predict(self,emg,tau=128):
         #emg = np.random.rand(512,8)
         #global b,emg_total,iteration
-        self.emg_total= np.append(self.emg_total,self.b,axis=0)
+        self.emg_total= np.append(self.emg_total,self.EMG,axis=0)
         print (self.emg_total.shape)
         if self.emg_total.shape[0] == 512:
             data= pd.DataFrame(self.emg_total)
@@ -124,10 +119,29 @@ class RealTime():
             self.emg_total = self.emg_total[128:]
             filename = 'EMG_hanna_model2.pickle'
             pickled_clf=joblib.load(filename)
-            self.b= np.empty([0,8]) 
+            self.EMG= np.empty([0,8]) 
             return pickled_clf.predict(predictors_test)
-        self.b= np.empty([0,8]) 
+        self.EMG= np.empty([0,8]) 
         return 0
+    """
+    def predict(self , path):
+        if self.emg_total.shape[0] >= 512:
+          self.flag_Predict =1
+          #print ("Hiiii")
+          self.emg_total = np.append( self.emg_total, self.EMG[:128], axis=0 )
+          self.EMG = self.EMG[128:]
+          data = pd.DataFrame( self.emg_total )
+          filtered_emg = self.filteration( data, sample_rate=200 )
+          predictors_test = self.get_predictors( filtered_emg )
+          self.emg_total = self.emg_total[128:]
+          filename = path
+          pickled_clf = joblib.load( filename )
+          return pickled_clf.predict( predictors_test )
+        else :
+          n= self.EMG.shape[0]
+          self.emg_total = np.append( self.emg_total, self.EMG[:n], axis=0 )
+          self.EMG = self.EMG[n:]
+    
 
     def start_MYO(self):
         myo_mac_addr = myo.get_myo()
@@ -165,7 +179,7 @@ class RealTime():
         print (emg.shape)
         # print emg[:,0] ## if you want a single channel
         #global b
-        self.b = np.empty( [0, 8] )
+        self.EMG = np.empty( [0, 8] )
 
     def process_emg(self,emg):
         # unfortunately the Filtered Array provide 1 array of 8 element at a time  ==> in te Form of Tuple
@@ -173,18 +187,18 @@ class RealTime():
         # print(emg)
         #global b
         ## for RAW_EMG
-        self.b = np.append( self.b, emg, axis=0 )
-        #print (self.b.shape[0])
-        if self.Flag_Predict == True and self.b.shape[0] == 128 :
-            self.predictions_array.append(self.predict( self.b ))
-            #self.p = np.append(self.p,self.predict(self.b), axis=0)
-            #c=self.predict( self.b )
+        self.EMG = np.append( self.EMG, emg, axis=0 )
+        #print (self.EMG.shape[0])
+        #if self.Flag_Predict == True and self.EMG.shape[0] == 128 :
+            #self.predictions_array.append(self.predict( self.EMG ))
+            #self.p = np.append(self.p,self.predict(self.EMG), axis=0)
+            #c=self.predict( self.EMG )
             
-            #self.prediction= self.predict( self.b )
+            #self.prediction= self.predict( self.EMG )
             # final(b)
             
-        #elif self.Flag_Graph == True and self.b.shape[0] ==1000 :
-            #self.b= np.empty([0,8])
+        #elif self.Flag_Graph == True and self.EMG.shape[0] ==1000 :
+            #self.EMG= np.empty([0,8])
             
             
 
@@ -210,13 +224,35 @@ class RealTime():
             myo_device.services.set_leds( [255, 0, 0], [128, 128, 255] )
         else:
             myo_device.services.set_leds( [128, 128, 255], [128, 128, 255] )
+    def ReadEMG(self):
+        while self.stop_request :
+            time.sleep(0.09)
+            if self.myo_device.services.waitForNotifications( 1 ):
+                continue
+            print("Waiting...")
+
+"""
+Real = RealTime()
+Real.start_MYO()
+Real.stop_request = True
+threading.Thread( target=Real.ReadEMG() ).start()
+#time.sleep(3)
+Real.stop_request = False
+print ("Hi")
 
 
 
+while True:
+    if Real.myo_device.services.waitForNotifications(1):
+		print (Real.EMG.shape[0])
+		continue
+	
+        
+        
+    print("Waiting...")
 
 
-
-
+"""
 
 
 
