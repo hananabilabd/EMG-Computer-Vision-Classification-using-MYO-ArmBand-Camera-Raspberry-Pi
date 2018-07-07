@@ -7,7 +7,7 @@ from sklearn import svm
 class EMG_Model():
 
     def filteration (self,data,sample_rate=2000.0,cut_off=20.0,order=5,ftype='highpass'): 
-        nyq = .5 * sample_rate
+        nyq = 0.5 * sample_rate
         b,a=butter(order,cut_off/nyq,btype=ftype)
         d= lfilter(b,a,data,axis=0)
         return pd.DataFrame(d)
@@ -111,11 +111,16 @@ class EMG_Model():
     def prepare_data(self,intended_movement_labels=[0,1,2,3],rows=8000):
         emg_set = {}
 
-        emg_set[0] = pd.read_csv( self.path1, header=None )
-        emg_set[1] = pd.read_csv( self.path2, header=None )
-        emg_set[2] = pd.read_csv( self.path3, header=None )
-        emg_set[3] = pd.read_csv( self.path4, header=None )
-        rows = min( emg_set[0].shape[0], emg_set[1].shape[0], emg_set[2].shape[0], emg_set[3].shape[0] )
+        e1 = pd.read_csv( self.path1, header=None )
+        e2 = pd.read_csv( self.path2, header=None )
+        e3 = pd.read_csv( self.path3, header=None )
+        e4 = pd.read_csv( self.path4, header=None )
+        rows = min( e1.shape[0], e2[1].shape[0], e3[2].shape[0], e4[3].shape[0] )
+        e1 = pd.read_csv( self.path1, nrows=rows, header=None )
+        e2 = pd.read_csv( self.path2, nrows=rows, header=None )
+        e3 = pd.read_csv( self.path3, nrows=rows, header=None )
+        e4 = pd.read_csv( self.path4, nrows=rows, header=None )
+        e = [e1, e2, e3, e4]
 
         rep = []
         reps =rows // 6 if rows % 6 == 0 else (rows //6)+1
@@ -129,6 +134,7 @@ class EMG_Model():
 
         for i in intended_movement_labels:
             #emg_set[i] = pd.read_csv('models/' +str(i)+".csv" ,nrows =rows,header=None)
+            emg_set[i] =e[i]
             emg_set[i]['label'] = i
             emg_set[i].columns = [1,2,3,4,5,6,7,8,'label']
             emg_set[i]['rep'] = rep
