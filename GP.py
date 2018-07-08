@@ -160,6 +160,7 @@ class Main(QMainWindow, Ui_MainWindow):
         self.thread1.start()
     def start_thread2(self):##Predict
         self.Real.EMG = np.empty( [0, 8] )
+        self.Real.emg_total = np.empty( [0, 8] )
         self.cv.q.queue.clear()
         #threading.Thread( target=self.ReadEMG() ).start()
         #self.flag_thread2 = True
@@ -169,6 +170,7 @@ class Main(QMainWindow, Ui_MainWindow):
 
     def start_thread4(self):  ##System
         self.Real.EMG = np.empty( [0, 8] )
+        self.Real.emg_total = np.empty( [0, 8] )
         self.cv.q.queue.clear()
         #self.flag_thread4 = True
         self.event_stop_thread4.clear()
@@ -195,7 +197,7 @@ class Main(QMainWindow, Ui_MainWindow):
             if self.Real.myo_device.services.waitForNotifications( 1 ):
                 #continue
                 c = self.Real.predict( path=self.path7 )
-                if not c == None:
+                if not c.size ==0:
                     self.cv.q.put( int( c ) )
                     print (self.cv.q.queue)
             #time.sleep( 0.01 )
@@ -204,7 +206,7 @@ class Main(QMainWindow, Ui_MainWindow):
         while not self.event_stop_thread4.is_set():
             if self.Real.myo_device.services.waitForNotifications( 1 ):
                 c = self.Real.predict( path=self.path8 )
-                if not c == None:
+                if not c.size ==0 :
                     self.cv.q.put( int( c ) )
                     print (self.cv.q.queue)
                     self.cv.Main_algorithm( path1=self.path9 )
