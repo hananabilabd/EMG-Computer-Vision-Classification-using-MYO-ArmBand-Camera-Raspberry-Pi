@@ -16,7 +16,7 @@ All code using the bluepy module must run with root permissions. To run the exam
 The Open Myo module **only works on Linux**, as the bluepy module is only available for Linux.
 
 ## Installation  PyQt4
- ```python
+ ```cmd
  sudo apt update
  sudo apt install pyqt4-dev-tools
  ```
