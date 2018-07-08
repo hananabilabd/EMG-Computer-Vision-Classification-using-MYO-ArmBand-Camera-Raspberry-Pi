@@ -20,7 +20,7 @@ The Open Myo module **only works on Linux**, as the bluepy module is only availa
  sudo apt update
  sudo apt install pyqt4-dev-tools
  ```
-### Video 
+### [Video](https://youtu.be/xmgbvkJEDqI)
 
 ### Screenshots
 EMG Plot Graph1:
