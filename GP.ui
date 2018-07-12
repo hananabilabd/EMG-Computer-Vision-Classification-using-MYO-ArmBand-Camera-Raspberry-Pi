@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>MYO EMG</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>:/photos/thalmic.ico</normaloff>:/photos/thalmic.ico</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_6">
     <item>
@@ -657,6 +661,141 @@
               <y>310</y>
               <width>171</width>
               <height>23</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Stop System</string>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="tab_6">
+           <attribute name="title">
+            <string>Online System</string>
+           </attribute>
+           <widget class="QPushButton" name="startButton">
+            <property name="geometry">
+             <rect>
+              <x>670</x>
+              <y>10</y>
+              <width>111</width>
+              <height>61</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Start video</string>
+            </property>
+           </widget>
+           <widget class="QGroupBox" name="groupBox">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>10</y>
+              <width>631</width>
+              <height>411</height>
+             </rect>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="title">
+             <string>Video</string>
+            </property>
+            <widget class="QWidget" name="ImgWidget" native="true">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>20</y>
+               <width>611</width>
+               <height>381</height>
+              </rect>
+             </property>
+            </widget>
+           </widget>
+           <widget class="QPushButton" name="pushButton_26">
+            <property name="geometry">
+             <rect>
+              <x>810</x>
+              <y>10</y>
+              <width>111</width>
+              <height>61</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Stop Video</string>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_27">
+            <property name="geometry">
+             <rect>
+              <x>670</x>
+              <y>90</y>
+              <width>111</width>
+              <height>61</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Start Prediction </string>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_28">
+            <property name="geometry">
+             <rect>
+              <x>810</x>
+              <y>90</y>
+              <width>111</width>
+              <height>61</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Stop Prediction</string>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_29">
+            <property name="geometry">
+             <rect>
+              <x>670</x>
+              <y>170</y>
+              <width>251</width>
+              <height>23</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Browse EMG Model (.pickle)</string>
+            </property>
+           </widget>
+           <widget class="QLineEdit" name="lineEdit_11">
+            <property name="geometry">
+             <rect>
+              <x>670</x>
+              <y>220</y>
+              <width>251</width>
+              <height>20</height>
+             </rect>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_30">
+            <property name="geometry">
+             <rect>
+              <x>670</x>
+              <y>250</y>
+              <width>111</width>
+              <height>61</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Start System</string>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="pushButton_31">
+            <property name="geometry">
+             <rect>
+              <x>810</x>
+              <y>250</y>
+              <width>111</width>
+              <height>61</height>
              </rect>
             </property>
             <property name="text">

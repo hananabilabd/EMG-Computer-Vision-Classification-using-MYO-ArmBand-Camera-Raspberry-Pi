@@ -387,6 +387,7 @@ if __name__ == '__main__':
 
     app = QtGui.QApplication(sys.argv)
     main = Main()
+    main.setWindowIcon( QtGui.QIcon( 'screenshots/x.png' ) )
     main.show()
     sys.exit(app.exec_())
 
