@@ -184,9 +184,8 @@ class Main(QMainWindow, Ui_MainWindow):
             if self.CV_realtimeFlag is not None:
                 self.CV_realtime.frame_to_predict = cv2.resize( original_frame, (224, 224) )
                 # Add text label and network score to the video captue
-                cv2.putText( original_frame,
-                             "Label: %s | Score: %.2f" % (self.CV_realtime.label, self.CV_realtime.score), (10, 30),
-                             cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2 )
+                cv2.putText( original_frame,"Label: %s | Score: %.2f" % (self.CV_realtime.label, self.CV_realtime.score), (10, 30),cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2 )
+                cv2.putText( original_frame," Name: %s| Class: %d " % (self.CV_realtime.grasp_name, self.CV_realtime.grasp_number), (10, 690), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2 )
             self.capture.grab()
             # retval, img = capture.retrieve( 0 )
             frame["img"] = original_frame

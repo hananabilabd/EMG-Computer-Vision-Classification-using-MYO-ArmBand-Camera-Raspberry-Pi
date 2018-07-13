@@ -9,10 +9,12 @@ import cv2, threading
 import numpy as np
 import time
 import random
-import queue  ##If python 3
-# import Queue as queue ##If python 2
-# Initialize global variables to be used by the classification thread
-# and load up the network and save it as a tensorflow graph
+#import queue  ##If python 3
+import Queue as queue ##If python 2
+l1 =[ "wooden_spoon" , "fountain_pen", "revolver" ,"kite" , "necklace" , "ballpoint"]
+l2 =["beer_glass"  , "hourglass" , "cup" , "measuring_cup" , "water_bottle" , "coffee_mug" ,"coffeepot" , "pill_bottle" ,"pop_bottle" ,"wine_bottle" ,"beer_bottle"]
+l3= ["cassette" , "cellular_telephone" , "wallet" , "iPod" , "notebook" , "bottlecap" , "remote_control" , "rubber_eraser" , "digital_watch"]
+l4=[ "pencil_box" , "plate" , "toilet_tissue" , "baseball" , "croquet_ball" , "golf_ball" , "ping-pong_ball" , "tennis_ball" , "cheeseburger" ]
 
 class MyThread(threading.Thread):
     def __init__(self):
@@ -48,6 +50,7 @@ class MyThread(threading.Thread):
                     self.frame_to_predict = imagenet_utils.preprocess_input(self.frame_to_predict)
                     predictions = self.model.predict(self.frame_to_predict)
                     (self.imageID, self.label, self.score) = imagenet_utils.decode_predictions(predictions)[0][0]
+                    self.grasp_type()
                     #print ((self.label ,self.score))
                 if self.classification == False :
                     break;
@@ -81,22 +84,30 @@ class MyThread(threading.Thread):
         cv2.destroyAllWindows()
 
     def grasp_type(self):
-        if self.label == "cellular_phone" :
-            grasp =1
+        if self.label in l1 :
+            self.grasp_number =1
+            self.grasp_name = "Pinch"
             print( ("Grasp_Type : Pinch \n ") )
-        elif self.label == "sunglasses" :
-            grasp =2
+
+        elif self.label in   l2:
+            self.grasp_number =2
+            self.grasp_name = "Palmar Wrist Neutral"
             print( ("Grasp_Type  : Palmar Wrist Neutral \n ") )
-        elif self.label == "beer_glass" :
-            grasp =3
+
+        elif self.label in l3:
+            self.grasp_number =3
+            self.grasp_name = "Tripod"
             print( ("Grasp_Type  : Tripod \n ") )
-        elif self.label == "wallet" or "coffee_mug" or "water_bottle" or "revolver" :  ##
-            grasp =4
+
+        elif self.label in l4:
+            self.grasp_number =4
+            self.grasp_name = "Palmar Wrist Pronated"
             print( ("Grasp_Type : Palmar Wrist Pronated \n ") )
         else :
             print (("Not Defined Grasp"))
-            grasp =5
-        return grasp
+            self.grasp_number =0
+            self.grasp_name ="Not Defined Grasp"
+        return self.grasp_number ,self.grasp_name
 
 
     def Main_algorithm(self):
@@ -134,7 +145,7 @@ class MyThread(threading.Thread):
             print ("Turning off ... back to rest state. \n\n\n")
         else:
             # Start/restart
-            self.grasp1 = self.grasp_type( )
+            self.grasp1, _ = self.grasp_type()
 
             print ((self.grasp1))
             print(('Preshaping grasp type {}\n\n').format( self.grasp1 ))

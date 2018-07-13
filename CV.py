@@ -28,38 +28,28 @@ class CV():
     def real_preprocess(self,img):
         # gray level
         img_gray = self.rgb2gray( img )
-
         # resize the image 48x36:
         img_resize = misc.imresize( img_gray, (48, 36) )
-
         # Normalization:
         img_norm = (img_resize - img_resize.mean()) / img_resize.std()
-
         return img_norm
 
 
     def Nazarpour_model(self,input_shape, num_of_layers=2):
         x_input = Input( input_shape )
-
         x = Conv2D( 5, (5, 5), strides=(1, 1), padding='valid' )( x_input )
         x = BatchNormalization( axis=3 )( x )
         x = Activation( 'relu' )( x )
         x = Dropout( 0.2 )( x )
-
         if num_of_layers == 2:
             x = Conv2D( 25, (5, 5), strides=(1, 1), padding='valid' )( x )
             x = BatchNormalization( axis=3 )( x )
             x = Activation( 'relu' )( x )
-
         x = MaxPooling2D( (2, 2), strides=(2, 2) )( x )
         x = Dropout( 0.2 )( x )
-
         x = Flatten()( x )
-
         x = Dense( 4, activation='softmax', kernel_initializer=glorot_uniform( seed=0 ) )( x )
-
         model = Model( inputs=x_input, outputs=x )
-
         return model
 
 
@@ -83,7 +73,14 @@ class CV():
         x = x.reshape( (1, n_row, n_col, nc) )
         out = model.predict( x )
         grasp = np.argmax( out ) + 1
-
+        if grasp == 1 :
+            print( ("Grasp_Type : Pinch  , Class = 1 \n ") )
+        if grasp == 2 :
+            print( ("Grasp_Type  : Palmar Wrist Neutral , Class = 2 \n ") )
+        if grasp == 3 :
+            print( ("Grasp_Type  : Tripod , Class = 3 \n ") )
+        if grasp == 4 :
+            print( ("Grasp_Type : Palmar Wrist Pronated,, Class = 4 \n ") )
         return grasp
 
 
