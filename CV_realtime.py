@@ -83,13 +83,16 @@ class MyThread(threading.Thread):
     def grasp_type(self):
         if self.label == "cellular_phone" :
             grasp =1
+            print( ("Grasp_Type : Pinch \n ") )
         elif self.label == "sunglasses" :
             grasp =2
+            print( ("Grasp_Type  : Palmar Wrist Neutral \n ") )
         elif self.label == "beer_glass" :
             grasp =3
+            print( ("Grasp_Type  : Tripod \n ") )
         elif self.label == "wallet" or "coffee_mug" or "water_bottle" or "revolver" :  ##
             grasp =4
-            print (("z3bolaaaaaaaaaaaaaaaaaaaaa"))
+            print( ("Grasp_Type : Palmar Wrist Pronated \n ") )
         else :
             print (("Not Defined Grasp"))
             grasp =5
