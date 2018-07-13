@@ -10,7 +10,7 @@ import pyqtgraph as pg
 import pyqtgraph
 import random
 import sys, time
-import RealTime
+import EMG
 import poweroff
 import threading
 from bluepy import btle
@@ -60,7 +60,7 @@ class Main(QMainWindow, Ui_MainWindow):
         #pyqtgraph.setConfigOption('background', 'w')  # before loading widget
         super(Main, self).__init__()
         self.setupUi(self)
-        self.Real = RealTime.RealTime()
+        self.Real = EMG.RealTime()
         self.Power=poweroff.poweroff()
         self.EMG_Modeling = EMG_Model.EMG_Model()
         self.cv = CV.CV()
