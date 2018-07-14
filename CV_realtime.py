@@ -100,19 +100,19 @@ class MyThread(threading.Thread):
 
         while not (self.q.empty()):
             EMG_class_recieved = self.q.get()
-            if (EMG_class_recieved == 0 or self.stage == 0):
+            if (EMG_class_recieved == 1 or self.stage == 0):
                 print(("EMG_class {0}, Stage {1} : \n".format( EMG_class_recieved, self.stage )))
                 self.System_power( 1 )  # Start system
 
-            elif (EMG_class_recieved == 1):
+            elif (EMG_class_recieved == 2):
                 print(("EMG_class {0}, Stage {1} : \n".format( EMG_class_recieved, self.stage )))
                 self.Confirmation()
 
-            elif (EMG_class_recieved == 2):
+            elif (EMG_class_recieved == 3):
                 print(("EMG_class {0}, Stage {1} : \n".format( EMG_class_recieved, self.stage )))
                 self.Cancellation()
 
-            elif (EMG_class_recieved == 3):
+            elif (EMG_class_recieved == 0):
                 print(("EMG_class {0}, Stage {1} : \n".format( EMG_class_recieved, self.stage )))
                 self.System_power( 0 )  # Turn system off
 

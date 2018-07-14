@@ -162,15 +162,15 @@ class CV():
 
         while not (self.q.empty()):
             EMG_class_recieved = self.q.get()
-            if (EMG_class_recieved == 5 or self.stage == 0):
+            if (EMG_class_recieved == 1 or self.stage == 0):
                 print("EMG_class {0}, Stage {1} : \n".format( EMG_class_recieved, self.stage ))
                 self.System_power( 1 )  # Start system
 
-            elif (EMG_class_recieved == 15):
+            elif (EMG_class_recieved == 1):
                 print("EMG_class {0}, Stage {1} : \n".format( EMG_class_recieved, self.stage ))
                 self.Confirmation()
 
-            elif (EMG_class_recieved == 17):
+            elif (EMG_class_recieved == 2):
                 print("EMG_class {0}, Stage {1} : \n".format( EMG_class_recieved, self.stage ))
                 self.Cancellation()
 
