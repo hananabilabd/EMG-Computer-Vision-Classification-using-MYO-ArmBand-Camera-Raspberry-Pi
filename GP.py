@@ -10,7 +10,7 @@ import pyqtgraph as pg
 import pyqtgraph
 import random
 import sys, time
-import RealTime
+import EMG
 import poweroff
 import threading
 from bluepy import btle
@@ -60,7 +60,7 @@ class Main(QMainWindow, Ui_MainWindow):
         #pyqtgraph.setConfigOption('background', 'w')  # before loading widget
         super(Main, self).__init__()
         self.setupUi(self)
-        self.Real = RealTime.RealTime()
+        self.Real = EMG.RealTime()
         self.Power=poweroff.poweroff()
         self.EMG_Modeling = EMG_Model.EMG_Model()
         self.cv = CV.CV()
@@ -120,13 +120,36 @@ class Main(QMainWindow, Ui_MainWindow):
         self.pushButton_25.clicked.connect( QtCore.QCoreApplication.instance().quit )
         self.path1 = self.path2 = self.path3 = self.path4 = self.path5 = self.path6 = self.path7 = self.path8 = None
 
-
+        ## To change text Color to Red Color
         palette = QtGui.QPalette()
         palette.setColor(QtGui.QPalette.Foreground, QtCore.Qt.red)
         self.label.setPalette(palette)
-        self.stop_request =True
 
-        
+        ##############################################################
+        self.CV_realtime = CV_realtime.MyThread()
+        self.CV_realtimeFlag = None
+        self.CV_realtimeFlag2 = 0
+        self.capture_thread = None
+        self.q = queue.Queue()
+        ##############################################################
+        self.startButton.clicked.connect( self.start_camera )
+        self.pushButton_26.clicked.connect( self.close_camera )
+        self.pushButton_27.clicked.connect( self.start_cvRealtime )
+        self.pushButton_28.clicked.connect( self.stop_cvRealtime )
+        self.pushButton_28.setEnabled( False )
+        self.window_width = self.ImgWidget.frameSize().width()
+        self.window_height = self.ImgWidget.frameSize().height()
+        self.ImgWidget = OwnImageWidget( self.ImgWidget )
+        self.timer = QtCore.QTimer( self )
+        self.timer.timeout.connect( self.update_frame )
+        self.timer.start( 1 )
+        ####
+        self.pushButton_29.clicked.connect( self.browsePickleEMGModel3 )
+        self.pushButton_30.clicked.connect( self.start_thread5 )
+        self.pushButton_31.clicked.connect( self.stop_thread5 )
+        self.pushButton_30.setStyleSheet( "background-color: green" )
+        self.pushButton_31.setStyleSheet( "background-color: red" )
+        ###################################################################################################################
         self.thread1 = None
         self.thread2 = None
         self.event_stop_thread0 = threading.Event()
@@ -134,8 +157,98 @@ class Main(QMainWindow, Ui_MainWindow):
         self.event_stop_thread2 = threading.Event()
         self.event_stop_thread3 = threading.Event()
         self.event_stop_thread4 = threading.Event()
-        
-        
+        self.event_stop_thread5 = threading.Event()
+
+    def start_camera(self):
+        self.ImgWidget.setHidden( False )
+        self.running = True
+        self.capture_thread = threading.Thread( target=self.grab, args=(0, self.q, 1920, 1080, 30) )
+        self.capture_thread.daemon = True
+        self.capture_thread.start()
+        self.startButton.setEnabled( False )
+        self.pushButton_26.setEnabled( True )
+        self.startButton.setText( 'Starting...' )
+        self.startButton.setText( 'Camera is live' )
+
+    def grab(self, cam, queue, width, height, fps):
+        self.capture = cv2.VideoCapture( cam )
+        self.capture.set( cv2.CAP_PROP_FRAME_WIDTH, width )
+        self.capture.set( cv2.CAP_PROP_FRAME_HEIGHT, height )
+        self.capture.set( cv2.CAP_PROP_FPS, fps )
+
+        while (self.running):
+            frame = {}
+            # Get the original frame from video capture
+            retval, original_frame = self.capture.read()
+            # Resize the frame to fit the imageNet default input size
+            if self.CV_realtimeFlag is not None:
+                self.CV_realtime.frame_to_predict = cv2.resize( original_frame, (224, 224) )
+                # Add text label and network score to the video captue
+                cv2.putText( original_frame,"Label: %s | Score: %.2f" % (self.CV_realtime.label, self.CV_realtime.score), (10, 30),cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2 )
+                cv2.putText( original_frame," Name: %s| Class: %d " % (self.CV_realtime.grasp_name, self.CV_realtime.grasp_number), (10, 690), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2 )
+            self.capture.grab()
+            # retval, img = capture.retrieve( 0 )
+            frame["img"] = original_frame
+
+            if queue.qsize() < 10:
+                queue.put( frame )
+            else:
+                print
+                queue.qsize()
+
+    def start_cvRealtime(self):
+        # self.CV_realtime = CV_realtime.MyThread()
+        self.CV_realtimeFlag = 1
+        if (self.CV_realtimeFlag2 == 0):
+            self.CV_realtimeFlag2 = 1
+            self.CV_realtime.daemon = True
+            self.CV_realtime.start()
+        print( (threading.active_count()) )
+        print( (threading.enumerate()) )
+        print( (threading.current_thread()) )
+        self.pushButton_27.setEnabled( False )
+        self.pushButton_28.setEnabled( True )
+
+    def stop_cvRealtime(self):
+        self.CV_realtime.classficication = False
+        self.pushButton_27.setEnabled( True )
+        self.pushButton_28.setEnabled( False )
+        self.CV_realtime.frame_to_predict = None
+        self.CV_realtimeFlag = None
+        # self.CV_realtime = CV_realtime.MyThread()
+        # self.capture.release()
+        # cv2.destroyAllWindows()
+
+    def update_frame(self):
+        if not self.q.empty():
+            # self.startButton.setText( 'Camera is live' )
+            frame = self.q.get()
+            img = frame["img"]
+
+            img_height, img_width, img_colors = img.shape
+            scale_w = float( self.window_width ) / float( img_width )
+            scale_h = float( self.window_height ) / float( img_height )
+            scale = min( [scale_w, scale_h] )
+
+            if scale == 0:
+                scale = 1
+
+            img = cv2.resize( img, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC )
+            img = cv2.cvtColor( img, cv2.COLOR_BGR2RGB )
+            height, width, bpc = img.shape
+            bpl = bpc * width
+            image = QtGui.QImage( img.data, width, height, bpl, QtGui.QImage.Format_RGB888 )
+            self.ImgWidget.setImage( image )
+
+    def close_camera(self, event):
+        # global running
+        self.ImgWidget.setHidden( True )
+        self.running = False
+        self.startButton.setText( 'Start Video' )
+        self.startButton.setEnabled( True )
+        self.pushButton_26.setEnabled( False )
+        self.CV_realtime.frame_to_predict = None
+        # cv2.destroyAllWindows()
     def ReadEMG(self):
         while (True):
             #time.sleep(0.05)
@@ -176,6 +289,24 @@ class Main(QMainWindow, Ui_MainWindow):
         self.event_stop_thread4.clear()
         self.thread4 = threading.Thread( target=self.loop4 )
         self.thread4.start()
+    def start_thread5(self):  ## Online_System
+        self.Real.EMG = np.empty( [0, 8] )
+        self.Real.emg_total = np.empty( [0, 8] )
+        self.CV_realtime.q.queue.clear()
+        self.CV_realtime.stage = 0
+        self.CV_realtime.corrections = 0
+        self.CV_realtime.grasp1 = None
+        self.CV_realtimeFlag = 1
+        if (self.CV_realtimeFlag2 == 0):
+            self.CV_realtimeFlag2 = 1
+            self.CV_realtime.daemon = True
+            self.CV_realtime.start()
+        elif (self.CV_realtimeFlag2 == 1):
+            pass
+        #self.flag_thread4 = True
+        self.event_stop_thread5.clear()
+        self.thread5 = threading.Thread( target=self.loop5 )
+        self.thread5.start()
 
     def loop0(self):
         while not self.event_stop_thread0.is_set():
@@ -206,11 +337,21 @@ class Main(QMainWindow, Ui_MainWindow):
         while not self.event_stop_thread4.is_set():
             if self.Real.myo_device.services.waitForNotifications( 1 ):
                 c = self.Real.predict( path=self.path8 )
-                if not c.size ==0 :
+                if  c.size ==1 :
                     self.cv.q.put( int( c ) )
                     print (self.cv.q.queue)
                     self.cv.Main_algorithm( path1=self.path9 )
             #time.sleep( 0.01 )
+
+    def loop5(self):  ##Online_System
+        while not self.event_stop_thread5.is_set():
+            if self.Real.myo_device.services.waitForNotifications( 1 ):
+                c = self.Real.predict( path=self.path8 )
+                if  c.size == 1:
+                    self.cv.q.put( int( c ) )
+                    print( self.cv.q.queue )
+                    self.cv.Main_algorithm( path1=self.path10 )
+                    # time.sleep( 0.01 )
 
     def stop_thread0(self):
         self.event_stop_thread0.set()
@@ -237,12 +378,24 @@ class Main(QMainWindow, Ui_MainWindow):
         self.thread3 = None
         self.Real.EMG = np.empty( [0, 8] )
         #self.Real.Flag_Graph0= False
-    def stop_thread4(self):
+    def stop_thread4(self): ## System
         self.event_stop_thread4.set()
         self.thread4.join()
         self.thread4 = None
         self.Real.EMG = np.empty( [0, 8] )
+        self.Real.emg_total = np.empty( [0, 8] )
+        self.cv.q.queue.clear()
+        self.c = np.array( [] )
+        print( ("Thread Of System Closed ") )
 
+    def stop_thread5(self):  ##Online_System
+        self.listen.hub.stop()
+        self.flag_thread5 = False
+        self.thread5 = None
+        self.listen.EMG = np.empty( [0, 8] )
+        self.CV_realtime.q.queue.clear()
+        self.listen.emg_total = np.empty( [0, 8] )
+        print( ("Thread Of Online System is Closed ") )
         
     def clear_textBrowser(self):          
         self.textBrowser.clear()
@@ -375,8 +528,11 @@ class Main(QMainWindow, Ui_MainWindow):
         self.lineEdit_5.setText( filepath )
         self.path9 = str( filepath )
         print (" Path = %s" % self.path9)
-
-
+    def browsePickleEMGModel3(self):
+        filepath = QtGui.QFileDialog.getOpenFileName( self, 'Single File', "", '*.pickle')
+        self.lineEdit_11.setText( filepath)
+        self.path10 = str( filepath )
+        print((" Path = %s" % self.path10))
 
 
 
