@@ -32,6 +32,8 @@ class MyThread(threading.Thread):
         self.all_grasps = [1, 2, 3, 4]
         self.Choose_grasp = list( self.all_grasps )
         self.grasp1 = None
+        self.grasp_number = 5
+        self.grasp_name = "None"
         ###
         print( 'Loading network...' )
         # self.model = VGG16(weights='imagenet')
