@@ -32,7 +32,7 @@ class MyThread(threading.Thread):
         self.all_grasps = [1, 2, 3, 4]
         self.Choose_grasp = list( self.all_grasps )
         self.grasp1 = None
-        self.grasp_number = 5
+        self.grasp_number = 0
         self.grasp_name = "None"
         ###
         print( 'Loading network...' )
@@ -108,7 +108,7 @@ class MyThread(threading.Thread):
         else :
             print (("Not Defined Grasp"))
             self.grasp_number =0
-            self.grasp_name ="Not Defined Grasp"
+            self.grasp_name ="None"
         return self.grasp_number ,self.grasp_name
 
 

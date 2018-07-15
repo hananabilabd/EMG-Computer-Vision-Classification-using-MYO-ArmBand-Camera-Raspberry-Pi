@@ -223,9 +223,7 @@ class Main(QMainWindow, Ui_MainWindow):
             self.CV_realtimeFlag2 = 1
             self.CV_realtime.daemon = True
             self.CV_realtime.start()
-        print( (threading.active_count()) )
-        print( (threading.enumerate()) )
-        print( (threading.current_thread()) )
+       
         self.pushButton_27.setEnabled( False )
         self.pushButton_28.setEnabled( True )
 
@@ -286,6 +284,7 @@ class Main(QMainWindow, Ui_MainWindow):
         
     def start_thread1(self):##Graph1
         self.Real.EMG = np.empty( [0, 8] )
+        self.Real.emg_total = np.empty( [0, 8] )
         #self.flag_thread1 = True
         self.event_stop_thread1.clear()
         self.thread1 = threading.Thread(target = self.loop1)
@@ -366,11 +365,11 @@ class Main(QMainWindow, Ui_MainWindow):
     def loop5(self):  ##Online_System
         while not self.event_stop_thread5.is_set():
             if self.Real.myo_device.services.waitForNotifications( 1 ):
-                c = self.Real.predict( path=self.path8 )
+                c = self.Real.predict( path=self.path10 )
                 if  c.size == 1:
-                    self.cv.q.put( int( c ) )
+                    self.CV_realtime.q.put( int( c ) )
                     print( self.cv.q.queue )
-                    self.cv.Main_algorithm( path1=self.path10 )
+                    self.CV_realtime.Main_algorithm()
                     # time.sleep( 0.01 )
 
     def stop_thread0(self):
@@ -409,12 +408,12 @@ class Main(QMainWindow, Ui_MainWindow):
         print( ("Thread Of System Closed ") )
 
     def stop_thread5(self):  ##Online_System
-        self.listen.hub.stop()
-        self.flag_thread5 = False
+        self.event_stop_thread5.set()
+        self.thread5.join()
         self.thread5 = None
-        self.listen.EMG = np.empty( [0, 8] )
+        self.Real.emg_total = np.empty( [0, 8] )
+        self.Real.EMG = np.empty( [0, 8] )
         self.CV_realtime.q.queue.clear()
-        self.listen.emg_total = np.empty( [0, 8] )
         print( ("Thread Of Online System is Closed ") )
         
     def clear_textBrowser(self):          
@@ -456,6 +455,7 @@ class Main(QMainWindow, Ui_MainWindow):
         print (" Path = %s" % self.path)
         self.records = int( self.lineEdit.text() )
         self.Real.EMG = np.empty( [0, 8] )
+        self.Real.emg_total = np.empty( [0, 8] )
         self.event_stop_thread3 = threading.Event()
         self.event_stop_thread3.clear()
         self.thread3 = threading.Thread( target=self.save_loop)
