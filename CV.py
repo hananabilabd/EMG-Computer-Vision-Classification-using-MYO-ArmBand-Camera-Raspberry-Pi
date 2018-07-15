@@ -3,8 +3,8 @@ import numpy as np
 import random
 import time
 from scipy import misc
-import queue  ##If python 3
-# import Queue as queue ##If python 2
+#import queue  ##If python 3
+import Queue as queue ##If python 2
 import threading
 from keras.layers import Input, Add, Dense, Activation,Dropout , BatchNormalization, Flatten, Conv2D,MaxPooling2D
 from keras.models import Model #, load_model

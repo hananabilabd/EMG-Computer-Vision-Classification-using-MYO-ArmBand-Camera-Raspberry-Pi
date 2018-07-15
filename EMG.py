@@ -1,14 +1,14 @@
 
 # for memory error >> try to change the float 64 to float 32 
 import numpy as np
-import scipy.io as sio
+#import scipy.io as sio
 import pandas as pd
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from scipy.signal import butter,lfilter,filtfilt
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn import svm
-from scipy import stats
-from sklearn.linear_model import SGDClassifier
+#from sklearn.neighbors import KNeighborsClassifier
+#from sklearn import svm
+#from scipy import stats
+#from sklearn.linear_model import SGDClassifier
 from sklearn.externals import joblib
 import sys
 #import test

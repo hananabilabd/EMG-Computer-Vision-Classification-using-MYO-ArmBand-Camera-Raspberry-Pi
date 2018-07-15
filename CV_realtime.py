@@ -3,7 +3,7 @@
 #==============================================================================
 import tensorflow as tf
 from keras.applications import imagenet_utils
-from keras.applications import VGG16
+#from keras.applications import VGG16
 from keras.applications import ResNet50
 import cv2, threading
 import numpy as np

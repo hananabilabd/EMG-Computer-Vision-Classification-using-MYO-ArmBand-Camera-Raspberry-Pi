@@ -16,8 +16,9 @@ import threading
 from bluepy import btle
 import CV
 import EMG_Model
+import CV_realtime
 #import collections
-#import Queue as queue ##If python 2
+import Queue as queue ##If python 2
 #import queue  ##If python 3
 import pandas as pd
 
@@ -65,12 +66,12 @@ class Main(QMainWindow, Ui_MainWindow):
         self.EMG_Modeling = EMG_Model.EMG_Model()
         self.cv = CV.CV()
         #self.Real.set_GP_instance(self)
-
         
-        XStream.stdout().messageWritten.connect( self.textBrowser.insertPlainText )
-        XStream.stdout().messageWritten.connect( self.textBrowser.ensureCursorVisible )
-        XStream.stderr().messageWritten.connect( self.textBrowser.insertPlainText )
-        XStream.stderr().messageWritten.connect( self.textBrowser.ensureCursorVisible )
+        ##TextBrowser
+        #XStream.stdout().messageWritten.connect( self.textBrowser.insertPlainText )
+        #XStream.stdout().messageWritten.connect( self.textBrowser.ensureCursorVisible )
+        #XStream.stderr().messageWritten.connect( self.textBrowser.insertPlainText )
+        #XStream.stderr().messageWritten.connect( self.textBrowser.ensureCursorVisible )
         
         #self.emgplot = pg.PlotWidget( name='EMGplot' )
         self.emgplot.setRange( QtCore.QRectF( -50, -200, 1000, 1400 ) )
@@ -134,21 +135,21 @@ class Main(QMainWindow, Ui_MainWindow):
         ##############################################################
         self.startButton.clicked.connect( self.start_camera )
         self.pushButton_26.clicked.connect( self.close_camera )
-        self.pushButton_27.clicked.connect( self.start_cvRealtime )
-        self.pushButton_28.clicked.connect( self.stop_cvRealtime )
-        self.pushButton_28.setEnabled( False )
+        #self.pushButton_27.clicked.connect( self.start_cvRealtime )
+        #self.pushButton_28.clicked.connect( self.stop_cvRealtime )
+        #self.pushButton_28.setEnabled( False )
         self.window_width = self.ImgWidget.frameSize().width()
         self.window_height = self.ImgWidget.frameSize().height()
         self.ImgWidget = OwnImageWidget( self.ImgWidget )
-        self.timer = QtCore.QTimer( self )
-        self.timer.timeout.connect( self.update_frame )
-        self.timer.start( 1 )
+        #self.timer = QtCore.QTimer( self )
+        #self.timer.timeout.connect( self.update_frame )
+        #self.timer.start( 1 )
         ####
-        self.pushButton_29.clicked.connect( self.browsePickleEMGModel3 )
-        self.pushButton_30.clicked.connect( self.start_thread5 )
-        self.pushButton_31.clicked.connect( self.stop_thread5 )
-        self.pushButton_30.setStyleSheet( "background-color: green" )
-        self.pushButton_31.setStyleSheet( "background-color: red" )
+        #self.pushButton_29.clicked.connect( self.browsePickleEMGModel3 )
+        #self.pushButton_30.clicked.connect( self.start_thread5 )
+        #self.pushButton_31.clicked.connect( self.stop_thread5 )
+        #self.pushButton_30.setStyleSheet( "background-color: green" )
+        #self.pushButton_31.setStyleSheet( "background-color: red" )
         ###################################################################################################################
         self.thread1 = None
         self.thread2 = None
