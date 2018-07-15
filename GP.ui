@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1220</width>
-    <height>560</height>
+    <width>1279</width>
+    <height>669</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -675,7 +675,7 @@
            <widget class="QPushButton" name="startButton">
             <property name="geometry">
              <rect>
-              <x>670</x>
+              <x>730</x>
               <y>10</y>
               <width>111</width>
               <height>61</height>
@@ -688,10 +688,10 @@
            <widget class="QGroupBox" name="groupBox">
             <property name="geometry">
              <rect>
-              <x>10</x>
-              <y>10</y>
-              <width>631</width>
-              <height>411</height>
+              <x>0</x>
+              <y>0</y>
+              <width>721</width>
+              <height>531</height>
              </rect>
             </property>
             <property name="sizePolicy">
@@ -708,8 +708,8 @@
               <rect>
                <x>10</x>
                <y>20</y>
-               <width>611</width>
-               <height>381</height>
+               <width>701</width>
+               <height>501</height>
               </rect>
              </property>
             </widget>
@@ -717,7 +717,7 @@
            <widget class="QPushButton" name="pushButton_26">
             <property name="geometry">
              <rect>
-              <x>810</x>
+              <x>870</x>
               <y>10</y>
               <width>111</width>
               <height>61</height>
@@ -730,8 +730,8 @@
            <widget class="QPushButton" name="pushButton_27">
             <property name="geometry">
              <rect>
-              <x>670</x>
-              <y>90</y>
+              <x>730</x>
+              <y>80</y>
               <width>111</width>
               <height>61</height>
              </rect>
@@ -743,8 +743,8 @@
            <widget class="QPushButton" name="pushButton_28">
             <property name="geometry">
              <rect>
-              <x>810</x>
-              <y>90</y>
+              <x>870</x>
+              <y>80</y>
               <width>111</width>
               <height>61</height>
              </rect>
@@ -756,8 +756,8 @@
            <widget class="QPushButton" name="pushButton_29">
             <property name="geometry">
              <rect>
-              <x>670</x>
-              <y>170</y>
+              <x>730</x>
+              <y>160</y>
               <width>251</width>
               <height>23</height>
              </rect>
@@ -769,8 +769,8 @@
            <widget class="QLineEdit" name="lineEdit_11">
             <property name="geometry">
              <rect>
-              <x>670</x>
-              <y>220</y>
+              <x>730</x>
+              <y>210</y>
               <width>251</width>
               <height>20</height>
              </rect>
@@ -779,7 +779,7 @@
            <widget class="QPushButton" name="pushButton_30">
             <property name="geometry">
              <rect>
-              <x>670</x>
+              <x>730</x>
               <y>250</y>
               <width>111</width>
               <height>61</height>
@@ -792,7 +792,7 @@
            <widget class="QPushButton" name="pushButton_31">
             <property name="geometry">
              <rect>
-              <x>810</x>
+              <x>870</x>
               <y>250</y>
               <width>111</width>
               <height>61</height>
@@ -800,6 +800,45 @@
             </property>
             <property name="text">
              <string>Stop System</string>
+            </property>
+           </widget>
+           <widget class="QRadioButton" name="radioButton">
+            <property name="geometry">
+             <rect>
+              <x>781</x>
+              <y>340</y>
+              <width>111</width>
+              <height>20</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Primary Camera</string>
+            </property>
+           </widget>
+           <widget class="QRadioButton" name="radioButton_2">
+            <property name="geometry">
+             <rect>
+              <x>780</x>
+              <y>370</y>
+              <width>121</width>
+              <height>20</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Secondary Camera</string>
+            </property>
+           </widget>
+           <widget class="QCheckBox" name="checkBox">
+            <property name="geometry">
+             <rect>
+              <x>780</x>
+              <y>400</y>
+              <width>111</width>
+              <height>17</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Show Recognition</string>
             </property>
            </widget>
           </widget>
@@ -873,7 +912,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1220</width>
+     <width>1279</width>
      <height>21</height>
     </rect>
    </property>
