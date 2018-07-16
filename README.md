@@ -36,5 +36,8 @@ EMG Training:
 EMG Testing:
 ![alt text](https://github.com/hananabilabd/EMG-Classification-Visualization-using-MYO-ArmBand-Raspberry-Pi/blob/master/screenshots/4.PNG)
 
-Computer Vision & EMG system Test:
+Computer Vision & EMG system Test Semi Real-Time System:
 ![alt text](https://github.com/hananabilabd/EMG-Classification-Visualization-using-MYO-ArmBand-Raspberry-Pi/blob/master/screenshots/5.PNG)
+
+Computer Vision & EMG system Real-Time System:
+![alt text](https://github.com/hananabilabd/EMG-Classification-Visualization-using-MYO-ArmBand-Raspberry-Pi/blob/master/screenshots/6.PNG)
