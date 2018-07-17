@@ -70,7 +70,27 @@ class OwnImageWidget( QtGui.QWidget ):
         if self.image:
             qp.drawImage( QtCore.QPoint( 0, 0 ), self.image )
         qp.end()
-        
+
+class LoadImageThread( QtCore.QThread ):
+    def __init__(self, file, w, h):
+        QtCore.QThread.__init__( self )
+        self.file = file
+        self.w = w
+        self.h = h
+    def __del__(self):
+        self.wait()
+    def run(self):
+        self.emit( QtCore.SIGNAL( 'showImage(QString, int, int)' ), self.file, self.w, self.h )
+class LoadImageThread2( QtCore.QThread ):
+    def __init__(self, file, w, h):
+        QtCore.QThread.__init__( self )
+        self.file = file
+        self.w = w
+        self.h = h
+    def __del__(self):
+        self.wait()
+    def run(self):
+        self.emit( QtCore.SIGNAL( 'showImage2(QString, int, int)' ), self.file, self.w, self.h )
 class Main(QMainWindow, Ui_MainWindow):
 
 
@@ -347,9 +367,10 @@ class Main(QMainWindow, Ui_MainWindow):
             if self.Real.myo_device.services.waitForNotifications( 1 ):
                 #continue
                 c = self.Real.predict( path=self.path7 )
-                if not c.size ==0:
+                if  c.size ==1:
                     self.cv.q.put( int( c ) )
                     print (self.cv.q.queue)
+                    self.someFunctionCalledFromAnotherThread2( int( c ) )
             #time.sleep( 0.01 )
 
     def loop4(self):  ##System
@@ -370,7 +391,53 @@ class Main(QMainWindow, Ui_MainWindow):
                     self.CV_realtime.q.put( int( c ) )
                     print( self.cv.q.queue )
                     self.CV_realtime.Main_algorithm()
+                    if self.CV_realtime.final is not None:
+                        self.someFunctionCalledFromAnotherThread( self.CV_realtime.final )
                     # time.sleep( 0.01 )
+    def someFunctionCalledFromAnotherThread(self,grasp):
+        if grasp == 1:
+            thread = LoadImageThread( file="screenshots/pinch.png", w=204, h=165 )
+            self.connect( thread, QtCore.SIGNAL( "showImage(QString, int, int)" ), self.showImage )
+            thread.start()
+        elif grasp == 2:
+            thread = LoadImageThread( file="screenshots/palmar_neutral.png", w=238, h=158 )
+            self.connect( thread, QtCore.SIGNAL( "showImage(QString, int, int)" ), self.showImage )
+            thread.start()
+        elif grasp == 3:
+            thread = LoadImageThread( file="screenshots/tripod.png", w=242, h=162 )
+            self.connect( thread, QtCore.SIGNAL( "showImage(QString, int, int)" ), self.showImage )
+            thread.start()
+        elif grasp == 4:
+            thread = LoadImageThread( file="screenshots/palmar_pronated.png", w=219, h=165 )
+            self.connect( thread, QtCore.SIGNAL( "showImage(QString, int, int)" ), self.showImage)
+            thread.start()
+
+    def showImage(self, filename, w, h):
+        pixmap = QtGui.QPixmap( filename ).scaled( w, h )
+        self.label_13.setPixmap( pixmap )
+        self.label_13.repaint()
+    def someFunctionCalledFromAnotherThread2(self,EMG_class):
+        if EMG_class == 1:
+            thread = LoadImageThread2( file="screenshots/finger_spread.png", w=278, h=299 )
+            self.connect( thread, QtCore.SIGNAL( "showImage2(QString, int, int)" ), self.showImage2 )
+            thread.start()
+        elif EMG_class == 2:
+            thread = LoadImageThread2( file="screenshots/wrist_extension.png", w=348, h=302 )
+            self.connect( thread, QtCore.SIGNAL( "showImage2(QString, int, int)" ), self.showImage2 )
+            thread.start()
+        elif EMG_class == 3:
+            thread = LoadImageThread2( file="screenshots/wrist_ulnar_deviation.png", w=283, h=254)
+            self.connect( thread, QtCore.SIGNAL( "showImage2(QString, int, int)" ), self.showImage2 )
+            thread.start()
+        elif EMG_class == 0:
+            thread = LoadImageThread2( file="screenshots/rest.png", w=353, h=254 )
+            self.connect( thread, QtCore.SIGNAL( "showImage2(QString, int, int)" ), self.showImage2)
+            thread.start()
+
+    def showImage2(self, filename, w, h):
+        pixmap = QtGui.QPixmap( filename ).scaled( w, h )
+        self.label_15.setPixmap( pixmap )
+        self.label_15.repaint()
 
     def stop_thread0(self):
         self.event_stop_thread0.set()

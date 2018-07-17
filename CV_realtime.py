@@ -34,6 +34,8 @@ class MyThread(threading.Thread):
         self.grasp1 = None
         self.grasp_number = 0
         self.grasp_name = "None"
+        self.final = None
+        self.flag1 = None
         ###
         print( 'Loading network...' )
         # self.model = VGG16(weights='imagenet')
@@ -89,47 +91,46 @@ class MyThread(threading.Thread):
         if self.label in l1 :
             self.grasp_number =1
             self.grasp_name = "Pinch"
-            print( ("Grasp_Type : Pinch \n ") )
+            #print( ("Grasp_Type : Pinch \n ") )
 
         elif self.label in   l2:
             self.grasp_number =2
             self.grasp_name = "Palmar Wrist Neutral"
-            print( ("Grasp_Type  : Palmar Wrist Neutral \n ") )
+            #print( ("Grasp_Type  : Palmar Wrist Neutral \n ") )
 
         elif self.label in l3:
             self.grasp_number =3
             self.grasp_name = "Tripod"
-            print( ("Grasp_Type  : Tripod \n ") )
+            #print( ("Grasp_Type  : Tripod \n ") )
 
         elif self.label in l4:
             self.grasp_number =4
             self.grasp_name = "Palmar Wrist Pronated"
-            print( ("Grasp_Type : Palmar Wrist Pronated \n ") )
+            #print( ("Grasp_Type : Palmar Wrist Pronated \n ") )
         else :
-            print (("Not Defined Grasp"))
+            #print (("Not Defined Grasp"))
             self.grasp_number =0
             self.grasp_name ="None"
         return self.grasp_number ,self.grasp_name
-
 
     def Main_algorithm(self):
 
         while not (self.q.empty()):
             EMG_class_recieved = self.q.get()
-            if (EMG_class_recieved == 1 or self.stage == 0):
-                print(("EMG_class {0}, Stage {1} : \n".format( EMG_class_recieved, self.stage )))
+            if (EMG_class_recieved == 1 ):
+                print(("EMG_class {0} : ".format( EMG_class_recieved)))
                 self.System_power( 1 )  # Start system
 
-            elif (EMG_class_recieved == 2):
-                print(("EMG_class {0}, Stage {1} : \n".format( EMG_class_recieved, self.stage )))
+            elif (EMG_class_recieved == 2 and self.flag1 ==1):
+                print(("EMG_class {0} : ".format( EMG_class_recieved)))
                 self.Confirmation()
 
-            elif (EMG_class_recieved == 3):
-                print(("EMG_class {0}, Stage {1} : \n".format( EMG_class_recieved, self.stage )))
+            elif (EMG_class_recieved == 3 and self.flag1 ==1):
+                print(("EMG_class {0} : ".format( EMG_class_recieved )))
                 self.Cancellation()
 
             elif (EMG_class_recieved == 0):
-                print(("EMG_class {0}, Stage {1} : \n".format( EMG_class_recieved, self.stage )))
+                print(("EMG_class {0}: ".format( EMG_class_recieved)))
                 self.System_power( 0 )  # Turn system off
 
     def System_power(self,Turn_on):
@@ -137,72 +138,46 @@ class MyThread(threading.Thread):
 
 
         # Reset values:
-        self.stage = 0
+        #self.stage = 0
         #    corrections= 0
-        self.Choose_grasp = list( self.all_grasps )
+        #self.Choose_grasp = list( self.all_grasps )
 
         if not Turn_on:
-            self.corrections = 0
+            #self.corrections = 0
             # Turn off
-            print ("Turning off ... back to rest state. \n\n\n")
+            print ("Turning off ... back to rest state.")
         else:
             # Start/restart
-            self.grasp1, _ = self.grasp_type()
+            self.grasp1,_ = self.grasp_type( )
 
-            print ((self.grasp1))
-            print(('Preshaping grasp type {}\n\n').format( self.grasp1 ))
-            self.stage = 1
+            print(('grasp type {} \n').format( self.grasp1 ))
+            self.flag1=1
+            #self.stage = 1
 
     def Confirmation(self):
 
 
-        print("    Confirmed! \n")
-        if self.stage < 2:
-            self.stage += 1
-            self.corrections = 0
-            self.Choose_grasp = list( self.all_grasps )
-            print(("Grasping ... grasp type{} \n\n").format( self.grasp1 ))
+        print("    Confirmed!")
+        #if self.stage < 2:
+            #self.stage += 1
+            #self.corrections = 0
+        #self.Choose_grasp = list( self.all_grasps )
+        self.final =self.grasp1
+        print(("Grasping ... grasp type{} \n").format( self.grasp1 ))
+        self.flag1=None
             # Do the action
-        else:
-            print ('Releasing ... \n')
-            self.System_power( 0 )
+        #else:
+            #print ('Releasing ... \n')
+            #self.System_power( 0 )
 
 
     def Cancellation(self):
 
 
 
-        if self.stage > 0:
-            print("    Cancelled! \n")
-            self.stage -= 1
-            #        corrections +=1
-            if (self.stage == 0 and self.corrections > 3):
-                print("Exceeded maximum iteration: \n Choosing from remaining grasps")
-                if self.Choose_grasp:
-                    if self.grasp1 in self.Choose_grasp:
-                        self.Choose_grasp.remove( self.grasp1 )
-                if not self.Choose_grasp: #To check if list is empty after removing an element.
-                    self.Choose_grasp = list( self.all_grasps )
-                    self.corrections = 0
-                self.grasp1 = random.SystemRandom().choice( self.Choose_grasp )
-                print(('Preshaping grasp type {}\n\n').format( self.grasp1 ))
-                self.stage = 1
-            else:
-                # Redo previous action:
-                if self.stage == 0:
-                    self.System_power( 1 )
-                    self.corrections += 1
-                    print ("Restarting ... \n")
-                elif self.stage == 1:
-                    print(('Preshaping grasp type {}\n\n').format( self.grasp1 ))
-                elif self.stage == 2:
-                    print(("Grasping ... grasp type{} \n\n").format( self.grasp1 ))
-            print(("Correction no. {}").format( self.corrections + 1 ))
-
-
-        else:
-            print ('No previous stage, restarting ... \n')
-            self.System_power( 1 )
+        #if self.stage > 0:
+        print("    Cancelled! \n")
+        self.flag1 =None
 
 # Start a keras thread which will classify the frame returned by openCV
 #keras_thread = MyThread()
