@@ -19,6 +19,7 @@ The Open Myo module **only works on Linux**, as the bluepy module is only availa
  ```cmd
  $ sudo apt update
  $ sudo apt install pyqt4-dev-tools
+ ( to install PyQt4 for Python3 $ sudo apt-get install python3-pyqt4 ))
  ```
 ### YouTube Video
  [Video](https://youtu.be/xmgbvkJEDqI)
